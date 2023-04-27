@@ -1,14 +1,19 @@
 // import { initiateUI } from './ui.js'
 
 async function search(location){
+    const span = document.querySelector('.searchForm span');
+    span.textContent = '... loading';
     if (!location || location.length === 0){
         location = 'Brooklyn, NY';
-    }
-    const data = await getWeather.forecast(location);
-    console.log(data)
-    const parsedData = parse(data);
-
-    display.update(parsedData);
+    };
+    try{
+        const data = await getWeather.forecast(location);
+        const parsedData = parse(data);
+        span.textContent = '';
+        display.update(parsedData);
+    } catch {
+        span.textContent = 'Location not found'
+    };
 }
 
 const getWeather = ((location = 'Brooklyn,NY') => {
@@ -70,7 +75,7 @@ const display = (function(){
     const header = document.createElement('div');
     header.classList.add('header');
     const title = document.createElement('h1');
-    title.textContent = 'Weather App'
+    title.innerText = 'Weather \n App'
     let switchCF = true;
     const switchBtn = document.createElement('button');
     switchBtn.addEventListener('click', () => {
@@ -90,7 +95,8 @@ const display = (function(){
     const submitBtn = document.createElement('button');
     submitBtn.type = 'submit';
     submitBtn.textContent = 'Search';
-    searchForm.append(searchLabel, submitBtn);
+    const span = document.createElement('span');
+    searchForm.append(searchLabel, submitBtn, span);
 
     content.append(searchForm);
 
@@ -114,12 +120,14 @@ const display = (function(){
     const weatherDiv = document.createElement('div');
     weatherDiv.classList.add('weather');
     const temp = document.createElement('p');
+    temp.id = 'currentTemp';
     const feelsLike = document.createElement('p');
 
     const condition = document.createElement('div');
-    const conditionText = document.createElement('p');
+    condition.classList.add('condition');
     const conditionIcon = document.createElement('img');
-    condition.append(conditionText, conditionIcon);
+    const conditionText = document.createElement('p');
+    condition.append(conditionIcon, conditionText);
     
     weatherDiv.append(temp, feelsLike, condition)
     content.append(weatherDiv);
@@ -146,13 +154,19 @@ const display = (function(){
     }
     content.append(forecastDiv);
 
+    // footer 
+    const footer = document.createElement('div')
+    footer.classList.add('footer');
+    footer.textContent = '© Dierk Peters 2023';
+    content.append(footer);
+
     let lastEntry;
     return {
         update: async function(data = lastEntry){
             lastEntry = data;
 
             let degree = switchCF ? 'C' : 'F'
-            switchBtn.textContent = switchCF ? 'Display in F' : 'Display in C'
+            switchBtn.textContent = switchCF ? 'Display in °F' : 'Display in °C'
 
             // location
             date.textContent = formatDate(new Date(data.location.localTime));
@@ -163,11 +177,12 @@ const display = (function(){
 
 
             // weather
-            temp.textContent = data.current['temp' + degree] + `°${degree}`
+            temp.textContent = data.current['temp' + degree] + `°${degree}`;
+            temp.className = ''
+            temp.classList.add(switchTemp(data.current.tempC));
             feelsLike.textContent = `Feels like ${data.current['feelsLike' + degree]}°${degree}`
             conditionText.textContent = data.current.condition.text;
             conditionIcon.src = `http://${data.current.condition.icon}`;
-            console.log(data)
 
             // forecast
             for(let i = 0; i < 7; i++){
@@ -208,5 +223,14 @@ function translateDay(int){
         case 6: return 'Saturday';
     }
 }
+
+function switchTemp(deg){
+    deg = parseFloat(deg)
+    if(deg <= 14) return 'cold';
+    else if(deg <= 24) return 'nice';
+    else if(deg <= 30) return 'warm';
+    else return 'hot;';
+}
+
 
 search();
