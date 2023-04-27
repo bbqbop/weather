@@ -17,7 +17,7 @@ async function search(location){
 }
 
 const getWeather = ((location = 'Brooklyn,NY') => {
-    const URL = 'http://api.weatherapi.com/v1'
+    const URL = 'https://api.weatherapi.com/v1'
     const API = '614224b56c5041de8d8181958232404'
     const currentWeather = '/current.json'
     const forecast = '/forecast.json'
