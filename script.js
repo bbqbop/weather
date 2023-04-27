@@ -24,7 +24,7 @@ const getWeather = ((location = 'Brooklyn,NY') => {
 
     return {
         forecast: async (location) => {
-            const response = await fetch(`${URL+forecast}?key=${API}&q=${location}&days=7`); 
+            const response = await fetch(`${URL+forecast}?key=${API}&q=${location}&days=7`, {mode: cors}); 
             const data = response.json();
             return data;
         },
