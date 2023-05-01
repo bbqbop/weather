@@ -11,8 +11,9 @@ async function search(location){
         const parsedData = parse(data);
         span.textContent = '';
         display.update(parsedData);
-    } catch {
+    } catch(err) {
         span.textContent = 'Location not found'
+        console.log(err)
     };
 }
 
@@ -24,7 +25,7 @@ const getWeather = ((location = 'Brooklyn,NY') => {
 
     return {
         forecast: async (location) => {
-            const response = await fetch(`${URL+forecast}?key=${API}&q=${location}&days=7`, {mode: cors}); 
+            const response = await fetch(`${URL+forecast}?key=${API}&q=${location}&days=7`, {mode: 'cors'}); 
             const data = response.json();
             return data;
         },
