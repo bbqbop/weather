@@ -193,7 +193,7 @@ const display = (function(){
                 
                 const tempSpan = day.querySelector('.temp span')
                 const temp = day.querySelector('.temp p');
-                weekday.textContent = formatDate(new Date(data.forecast[i].date.split('-')));
+                weekday.innerText = formatDate(new Date(data.forecast[i].date.split('-')));
                 icon.src = `http://${data.forecast[i].condition.icon}`;
                 const minTemp = `${data.forecast[i]['minTemp' + degree]}`
                 const maxTemp = `${data.forecast[i]['maxTemp' + degree]}`
@@ -210,7 +210,7 @@ function formatDate(date){
     const day = date.getDate();
     const year = date.getFullYear();
 
-    return `${weekDay}, ${month}/${day}/${year}`;
+    return `${weekDay}, \n${month}/${day}/${year}`;
 }
 
 function translateDay(int){
